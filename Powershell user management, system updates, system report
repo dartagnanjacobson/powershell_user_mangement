@@ -1,0 +1,53 @@
+# Function to create a new user
+function CreateUser {
+    param (
+        [string]$username,
+        [string]$password
+    )
+    $SecurePassword = ConvertTo-SecureString $password -AsPlainText -Force
+    New-LocalUser -Name $username -Password $SecurePassword
+    Write-Host "User $username created successfully."
+}
+
+# Function to update the system
+function UpdateSystem {
+    Install-WindowsUpdate -MicrosoftUpdate -AcceptAll -IgnoreReboot
+    Write-Host "System updates installed successfully."
+}
+
+# Function to generate a system report
+function GenerateReport {
+    $reportFile = "system_report.txt"
+    Get-ComputerInfo | Out-File $reportFile
+    Write-Host "System report generated successfully at $reportFile."
+}
+
+# Main menu to choose an operation
+while ($true) {
+    Write-Host "Please choose an operation:"
+    Write-Host "1. Create User"
+    Write-Host "2. Update System"
+    Write-Host "3. Generate Report"
+    Write-Host "4. Exit"
+    $choice = Read-Host "Enter the number of your choice"
+
+    switch ($choice) {
+        "1" {
+            $username = Read-Host "Enter the username"
+            $password = Read-Host "Enter the password" -AsSecureString
+            CreateUser -username $username -password $password
+        }
+        "2" {
+            UpdateSystem
+        }
+        "3" {
+            GenerateReport
+        }
+        "4" {
+            exit
+        }
+        default {
+            Write-Host "Invalid choice. Please try again."
+        }
+    }
+}
